@@ -1,6 +1,7 @@
 """Run the arXiv app back-end"""
 
 import flask
+import json
 from sys import path
 from pymongo import MongoClient
 path.append('./static')
@@ -15,10 +16,11 @@ client = MongoClient()
 hepex = client.arXivpapers.hepex
 hepph = client.arXivpapers.hepph
 
-cursor = helper.get_cursor()
+cursor = helper.get_cursor(client)
 abs_dict = helper.loop_events(cursor, KEYWORDS)
 del cursor
-abstract_json = flask.jsonify(abs_dict)
+# abstract_json = flask.jsonify(abs_dict)
+abstract_json = json.dumps(abs_dict)
 
 app = flask.Flask(__name__)
 
@@ -36,4 +38,12 @@ def dosomething():
     """When a POST request is made with some json data, read the
     sample from a json called sample, and return something.
     I have implemented the function date_range into the helper"""
-    pass
+
+    data = flask.request.json
+    particles_count = helper.date_range(abs_dict, data[0], data[1])
+
+    return flask.jsonify(particles_count)
+
+
+app.debug = True
+app.run(host='0.0.0.0', port=8000)
