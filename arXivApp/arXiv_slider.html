@@ -46,14 +46,16 @@
             async: true,
             data: "{\"sample\": [" + start + "," + end + "]}",
             success: function(data) {
-                console.log('vaffanculo');
                 particle_count = data;
             },
-            error: function(result) {}
+            error: function(result) {
+                console.log(result);
+            }
         })
     }
 
     particles_count(start_date, end_date);
+    console.log(start_date, end_date);
     console.log(particle_count);
 
     d3.select('#slider3')

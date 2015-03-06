@@ -2,6 +2,8 @@
 
 import flask
 import json
+import numpy as np
+import socket
 from sys import path
 from pymongo import MongoClient
 path.append('./static')
@@ -12,7 +14,12 @@ KEYWORDS = ['electron', 'photon', 'muon', 'higgs', 'tau', 'proton',
             'neutron', 'quark', 'top', 'strange', 'bottom', 'quark',
             'lepton', 'meson', 'jet', 'BaBar', 'ATLAS', 'CMS']
 
-client = MongoClient()
+if socket.gethostname() == 'mcnulty-emmanuele':
+    client = MongoClient()
+else:
+    URI = 'mongodb://104.236.120.21'
+    client = MongoClient(host=URI)
+
 hepex = client.arXivpapers.hepex
 hepph = client.arXivpapers.hepph
 
@@ -34,14 +41,16 @@ def viz_page():
 
 
 @app.route("/postdir", methods=['POST'])
-def dosomething():
+def postdir():
     """When a POST request is made with some json data, read the
     sample from a json called sample, and return something.
     I have implemented the function date_range into the helper"""
 
     data = flask.request.json
-    particles_count = helper.date_range(abs_dict, data[0], data[1])
+    # x = np.array(data['sample'])
+    particles_count = helper.date_range(abs_dict, x[0], [1])
 
+    # particles_count = x
     return flask.jsonify(particles_count)
 
 
