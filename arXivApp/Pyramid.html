@@ -80,7 +80,7 @@ rect:first-child {
         .attr("dy", ".71em")
         .text(2000);
 
-    d3.csv("population.csv", function(error, data) {
+    d3.csv("/static/population.csv", function(error, data) {
 
         // Convert strings to numbers.
         data.forEach(function(d) {
@@ -144,6 +144,7 @@ rect:first-child {
 
         birthyear.selectAll("rect")
             .data(function(birthyear) {
+                console.log(year, birthyear, data[year][birthyear])
                 return data[year][birthyear] || [0, 0];
             })
             .enter().append("rect")

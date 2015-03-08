@@ -52,6 +52,8 @@ def viz_page():
 
     with open('arXiv_Pyramid.html') as viz_file:
         return viz_file.read()
+    # with open('Pyramid.html') as viz_file:
+    #     return viz_file.read()
 
 
 @app.route("/postdir", methods=['POST'])
@@ -61,12 +63,10 @@ def postdir():
     I have implemented the function date_range into the helper"""
 
     data = flask.request.json
-    # data_dict = json.loads(data)
     x = data['sample']
     the_counter = helper.date_range(abs_dict, x[0], x[1])
 
     return flask.jsonify(the_counter)
-    # return the_counter
 
 
 app.debug = True
