@@ -27,9 +27,9 @@ KEYWORDS = ['electron', 'photon', 'muon', 'higgs', 'tau', 'proton',
 # cursor = helper.get_cursor(client)
 # abs_dict = helper.loop_events(cursor, KEYWORDS)
 
-import pickle as pkl
-with open("abstract_with_str.pkl", 'r') as pklfile:
-    abs_dict = pkl.load(pklfile)
+# import pickle as pkl
+# with open("abstract_with_str.pkl", 'r') as pklfile:
+#     abs_dict = pkl.load(pklfile)
 
 print 'Loop ended, you can view the page now'
 # del cursor
@@ -39,18 +39,18 @@ print 'Loop ended, you can view the page now'
 app = flask.Flask(__name__)
 
 
-@app.route("/data")
-def abstracts():
-    """Puts the dictionary of abstracts into the data route"""
+# @app.route("/data")
+# def abstracts():
+#     """Puts the dictionary of abstracts into the data route"""
 
-    return flask.jsonify(**abs_dict)
+#     return flask.jsonify(**abs_dict)
 
 
 @app.route("/")
 def viz_page():
     """Homepage to serve the visualization page"""
 
-    with open('arXiv_slider.html') as viz_file:
+    with open('arXiv_Pyramid.html') as viz_file:
         return viz_file.read()
 
 

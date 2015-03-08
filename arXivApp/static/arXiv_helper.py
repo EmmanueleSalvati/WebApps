@@ -69,3 +69,87 @@ def date_range(abstracts=None, from_date=None, to_date=None):
             counter[particle] += 1
 
     return counter
+
+
+def electrons_in_abstract(abstract=None):
+    """Temporary: returns a csv file like this:
+    date,electrons
+    u'2011-01-10',4
+    ...
+    """
+
+    import csv
+    with open('electrons.csv', 'w') as csvfile:
+        fieldnames = ['rollingmonth', 'year', 'month', 'electrons']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for k, v in abstract.iteritems():
+            writer.writerow({"rollingmonth": k[0],
+                             "year": k[1],
+                             "month": k[2],
+                             "electrons": v})
+
+
+def sum_electrons(particle_row):
+    """Get a list [u'muon', u'electron', u'electron', etc.]
+    and return the number of electrons"""
+
+    from collections import Counter
+
+    return Counter(particle_row)['electron']
+
+
+def write_csv(filename):
+    """Write electrons.csv from the filename=abs_yearmonth.pkl"""
+
+    import pickle as pkl
+    with open(filename, 'r') as pklfile:
+        abs_dict = pkl.load(pklfile)
+
+    electrons_in_abstract(abs_dict)
+
+
+def convert_date_to_yearmonth(filename):
+    """Takes the abstract dictionary and turns the datetime objects
+    into year, date"""
+
+    from datetime import datetime
+    import pickle as pkl
+    with open(filename, 'r') as pklfile:
+        abs_dict = pkl.load(pklfile)
+
+    ym_dict = {}
+    for k, v in abs_dict.iteritems():
+        year = k.year
+        month = k.month
+        if (year, month) in ym_dict:
+            ym_dict[(year, month)].extend(v)
+        else:
+            ym_dict[(year, month)] = v
+
+    return ym_dict
+
+
+def convert_ym_to_sumofmonths(filename):
+    """Takes the ym_dict dictionary and returns a dict of the form:
+    month order, datestring, electroncount"""
+
+    from collections import Counter
+    from collections import OrderedDict
+    import pickle as pkl
+    with open(filename, 'r') as pklfile:
+        ym_dict = pkl.load(pklfile)
+
+    ordered_ym_dict = OrderedDict(sorted(ym_dict.iteritems()))
+    months = len(ordered_ym_dict)
+
+    rolling_dict = {}
+    for i in range(months):
+        my_index = (i,
+                    ordered_ym_dict.items()[i][0][0],
+                    ordered_ym_dict.items()[i][0][1])
+
+        rolling_dict[my_index] = sum_electrons(ordered_ym_dict.
+                                               items()[i][1])
+
+    return rolling_dict
