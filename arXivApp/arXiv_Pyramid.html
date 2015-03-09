@@ -15,13 +15,17 @@
         shape-rendering: crispEdges;
     }
     .title {
-        font: 300 78px Helvetica Neue;
+        font: 300 58px Helvetica Neue;
         fill: #666;
     }
     .abs_month {
         /*        fill: #fff; */
         text-anchor: middle;
     }
+    .abs_month text {
+        font: 300 24px;
+    }
+
     rect {
         fill-opacity: .6;
         /*        fill: #e377c2; */
@@ -38,7 +42,7 @@
 
     <script type="text/javascript">
     var margin = {
-            top: 20,
+            top: 40,
             right: 40,
             bottom: 30,
             left: 20
@@ -77,6 +81,11 @@
         .attr('dy', ".71em")
         .text("electrons");
 
+    var month_names = ['0', 'Jan', 'Feb', 'Mar', "Apr", "May", "Jun",
+                   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    // ######################
+    // Here we load the data!
     d3.csv("/static/electrons.csv", type, function(error, data) {
         console.log('...in the csv function');
 
@@ -93,13 +102,30 @@
             return d.electrons;
         })]);
 
-        data = d3.nest()
+        num_particles = d3.nest()
             .key(function(d) {
                 return d.rollingmonth;
             })
             .rollup(function(v) {
                 return v.map(function(d) {
                     return d.electrons;
+                })
+            })
+            .map(data);
+
+
+        month_text = d3.nest()
+            .key(function(d) {
+                return d.rollingmonth;
+            })
+            .rollup(function(v) {
+                return v.map(function(d) {
+                    if (d.month == 1) {
+                        return month_names[d.month] + " " + d.year;
+                    }
+                    else {
+                        return month_names[d.month]
+                    }
                 })
             })
             .map(data);
@@ -125,7 +151,7 @@
 
         abstracts_month.selectAll("rect")
             .data(function(rollingmonth) {
-                return data[rollingmonth];
+                return num_particles[rollingmonth];
             })
             .enter().append("rect")
             .attr('x', -barWidth / 2)
@@ -137,10 +163,10 @@
 
         // Add labels to show rolling month.
         abstracts_month.append("text")
-            .attr("y", height + 8)
+            .attr("y", height + 13)
+            .attr('font-size', 15)
             .text(function(something) {
-                console.log(something);
-                return something;
+                return month_text[something];
             });
 
         // Allow the arrow keys to change the displayed year.
@@ -160,7 +186,7 @@
         });
 
         function update() {
-            if (!(rollingmonth in data)) {
+            if (!(rollingmonth in num_particles)) {
                 return;
             }
             // title.text(rollingmonth);
@@ -171,7 +197,7 @@
 
             abstracts_month.selectAll("rect")
                 .data(function(a_month) {
-                    return data[a_month] || [0, 0];
+                    return num_particles[a_month] || [0, 0];
                 })
                 .transition()
                 .duration(250)
