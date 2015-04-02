@@ -27,7 +27,7 @@ var path = d3.geo.path()
     .projection(projection)
     .pointRadius(2);
 
-d3.csv("tot_events_northamerica.csv", function(data) {
+d3.csv("/static/tot_events_northamerica.csv", function(data) {
     color.domain([
         d3.max(data, function(d) {
             return d.NumEvents;
@@ -37,7 +37,7 @@ d3.csv("tot_events_northamerica.csv", function(data) {
         })
     ]);
 
-    d3.json("northamerica.json", function(error, json) {
+    d3.json("/static/northamerica.json", function(error, json) {
         if (error) return console.error(error);
 
         for (var i = 0; i < data.length; i++) {
@@ -63,7 +63,6 @@ d3.csv("tot_events_northamerica.csv", function(data) {
             }
         }
 
-        // I have to put the call function here
         svg.selectAll("path")
             .data(topojson.feature(json,
                 json.objects.northamerica_subunits).features)
@@ -98,7 +97,7 @@ d3.csv("tot_events_northamerica.csv", function(data) {
         function somethingCool() {
             var mysel = d3.select(this).data();
             $("svg.chart").empty();
-            var country = {'CAN': 'canada_20rows.tsv'};
+            var country = {'CAN': '/static/canada_20rows.tsv'};
             draw_bars(country[mysel[0].id]);
             // console.log(mysel[0].id);
         }

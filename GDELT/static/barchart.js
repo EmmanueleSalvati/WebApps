@@ -17,12 +17,9 @@ var yAxis = d3.svg.axis()
 var chart = d3.select("#area1").append('svg')
     .attr('class', 'chart')
     .attr('width', width + margin.left + margin.right);
-    // .style("visibility", "hidden");
-
 
 
 function draw_bars(country_name) {
-    // d3.tsv('canada_20rows.tsv', type, function(error, data) {
     d3.tsv(country_name, type, function(error, data) {
         x.domain([0, d3.max(data, function(d) {
             return d.value;
@@ -36,7 +33,6 @@ function draw_bars(country_name) {
             .ticks(data.length);
 
         chart.attr('height', (margin.top + barHeight * data.length + 5));
-        // chart.style("visibility", "visible");
 
         var bar = chart.selectAll('g')
             .data(data)
@@ -89,7 +85,8 @@ function draw_bars(country_name) {
             .text('Ranking');
     });
 };
-    function type(d) {
-        d.value = +d.value;
-        return d;
-    }
+
+function type(d) {
+    d.value = +d.value;
+    return d;
+};
