@@ -18,6 +18,9 @@ var chart = d3.select("#area1").append('svg')
     .attr('class', 'chart')
     .attr('width', width + margin.left + margin.right);
 
+// Color of the bars. I need the AvgTone for this.
+var color = d3.scale.ordinal()
+    .range(colorbrewer.Accent[4]);
 
 function draw_bars(country_name) {
     d3.tsv(country_name, type, function(error, data) {
@@ -85,8 +88,7 @@ function draw_bars(country_name) {
             .text('Ranking');
     });
 };
-
-function type(d) {
-    d.value = +d.value;
-    return d;
-};
+    function type(d) {
+        d.value = +d.value;
+        return d;
+    }

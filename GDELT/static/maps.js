@@ -12,12 +12,8 @@ var svg = d3.select("#area2").append("svg")
     .attr('width', width)
     .attr('height', height);
 
-var color = d3.scale.linear()
-    .range(["rgb(51,0,0)", "rgb(102,0,0)", "rgb(153,0,0)",
-        "rgb(204,0,0)", "rgb(255,0,0)", "rgb(255,51,51)",
-        "rgb(255,102,102)", "rgb(255, 153,153)",
-        "rgb(255,204,204)"
-    ]);
+var color = d3.scale.ordinal()
+    .range(colorbrewer.PuRd[4]);
 
 var projection = d3.geo.albers()
     .translate([width / 2, height / 2])
@@ -27,18 +23,25 @@ var path = d3.geo.path()
     .projection(projection)
     .pointRadius(2);
 
-d3.csv("/static/tot_events_northamerica.csv", function(data) {
+d3.csv("tot_events_northamerica.csv", function(data) {
     color.domain([
-        d3.max(data, function(d) {
+        d3.min(data, function(d) {
             return d.NumEvents;
         }),
-        d3.min(data, function(d) {
+        d3.max(data, function(d) {
             return d.NumEvents;
         })
     ]);
 
-    d3.json("/static/northamerica.json", function(error, json) {
+    d3.json("northamerica.json", function(error, json) {
         if (error) return console.error(error);
+
+        var numColors = (topojson.feature(json,
+            json.objects.northamerica_subunits).features.length);
+
+        // color.range(colorbrewer.PuRd[numColors]);
+        color.range(colorbrewer.Accent[numColors]);
+        console.log(numColors);
 
         for (var i = 0; i < data.length; i++) {
             var country = data[i].DomainCountry;
@@ -54,8 +57,8 @@ d3.csv("/static/tot_events_northamerica.csv", function(data) {
                     topojson.feature(json,
                         json.objects.northamerica_subunits).features[j].properties.value = numevents;
 
-                    console.log("Num events:", topojson.feature(json,
-                        json.objects.northamerica_subunits).features[j].properties.value);
+                    // console.log("Num events:", topojson.feature(json,
+                    //     json.objects.northamerica_subunits).features[j].properties.value);
 
                     break;
                 }
@@ -63,6 +66,7 @@ d3.csv("/static/tot_events_northamerica.csv", function(data) {
             }
         }
 
+        // I have to put the call function here
         svg.selectAll("path")
             .data(topojson.feature(json,
                 json.objects.northamerica_subunits).features)
@@ -94,10 +98,43 @@ d3.csv("/static/tot_events_northamerica.csv", function(data) {
                 return d.properties.name;
             });
 
+        /* Add legend */
+        var legendRectSize = 18;
+        var legendSpacing = 4;
+        var legend = svg.selectAll('.legend')
+            .data(color.domain())
+            .enter()
+            .append('g')
+            .attr('class', 'legend')
+            .attr('transform', function(d, i) {
+                var offset = 5 * numColors;
+                var horz = 2 * legendRectSize;
+                var vert = height - (i + 1) * offset;
+                // console.log('offset', offset);
+                // console.log('vert', vert);
+                return 'translate(' + horz + ',' + vert + ')';
+            });
+        legend.append('rect')
+            .attr('width', legendRectSize)
+            .attr('height', legendRectSize)
+            .style('fill', color)
+            .style('stroke', color);
+        legend.append('text')
+            .attr('x', legendRectSize + legendSpacing)
+            .attr('y', legendRectSize - legendSpacing)
+            .text(function(d) {
+                num = d.toString();
+                return num + ' news events';
+            });
+
         function somethingCool() {
             var mysel = d3.select(this).data();
             $("svg.chart").empty();
-            var country = {'CAN': '/static/canada_20rows.tsv'};
+            var country = {
+                'CAN': 'Canada.tsv',
+                'MEX': 'Mexico.tsv',
+                'USB': 'UnitedStates.tsv'
+            };
             draw_bars(country[mysel[0].id]);
             // console.log(mysel[0].id);
         }
