@@ -39,7 +39,6 @@ d3.csv("tot_events_northamerica.csv", function(data) {
         var numColors = (topojson.feature(json,
             json.objects.northamerica_subunits).features.length);
 
-        // color.range(colorbrewer.PuRd[numColors]);
         color.range(colorbrewer.Accent[numColors]);
         console.log(numColors);
 
@@ -110,8 +109,6 @@ d3.csv("tot_events_northamerica.csv", function(data) {
                 var offset = 5 * numColors;
                 var horz = 2 * legendRectSize;
                 var vert = height - (i + 1) * offset;
-                // console.log('offset', offset);
-                // console.log('vert', vert);
                 return 'translate(' + horz + ',' + vert + ')';
             });
         legend.append('rect')
@@ -135,8 +132,8 @@ d3.csv("tot_events_northamerica.csv", function(data) {
                 'MEX': 'Mexico.tsv',
                 'USB': 'UnitedStates.tsv'
             };
-            draw_bars(country[mysel[0].id]);
-            // console.log(mysel[0].id);
+            draw_bars(country[mysel[0].id], mysel[0].properties.name);
+            // console.log(mysel[0].properties.name);
         }
 
         d3.selectAll("path")

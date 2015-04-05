@@ -1,7 +1,8 @@
 /* bar chart styling */
 
 .chart text {
-    fill: white;
+    fill: black;
+    font-weight: bold;
     font: 14px sans-serif;
     text-anchor: end;
 }
