@@ -23,7 +23,7 @@ var path = d3.geo.path()
     .projection(projection)
     .pointRadius(2);
 
-d3.csv("tot_events_northamerica.csv", function(data) {
+d3.csv("/static/tot_events_northamerica.csv", function(data) {
     color.domain([
         d3.min(data, function(d) {
             return d.NumEvents;
@@ -33,7 +33,7 @@ d3.csv("tot_events_northamerica.csv", function(data) {
         })
     ]);
 
-    d3.json("northamerica.json", function(error, json) {
+    d3.json("/static/northamerica.json", function(error, json) {
         if (error) return console.error(error);
 
         var numColors = (topojson.feature(json,
@@ -131,9 +131,9 @@ d3.csv("tot_events_northamerica.csv", function(data) {
             var mysel = d3.select(this).data();
             $("svg.chart").empty();
             var country = {
-                'CAN': 'Canada.tsv',
-                'MEX': 'Mexico.tsv',
-                'USB': 'UnitedStates.tsv'
+                'CAN': '/static/Canada.tsv',
+                'MEX': '/static/Mexico.tsv',
+                'USB': '/static/UnitedStates.tsv'
             };
             draw_bars(country[mysel[0].id]);
             // console.log(mysel[0].id);
