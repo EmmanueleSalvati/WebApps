@@ -17,17 +17,17 @@ def viz_page():
         return viz_file.read()
 
 
-@app.route("/postdir", methods=['POST'])
-def postdir():
-    """When a POST request is made with some json data, read the
-    sample from a json called sample, and return something.
-    I have implemented the function date_range into the helper"""
+# @app.route("/postdir", methods=['POST'])
+# def postdir():
+#     """When a POST request is made with some json data, read the
+#     sample from a json called sample, and return something.
+#     I have implemented the function date_range into the helper"""
 
-    data = flask.request.json
-    x = data['sample']
-    the_counter = helper.date_range(abs_dict, x[0], x[1])
+#     data = flask.request.json
+#     x = data['sample']
+#     the_counter = helper.date_range(abs_dict, x[0], x[1])
 
-    return flask.jsonify(the_counter)
+#     return flask.jsonify(the_counter)
 
 
 app.debug = False
