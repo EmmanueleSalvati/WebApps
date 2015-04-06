@@ -7,7 +7,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
-    <script src="/static/colorbrewer.js"></script>
+    <script src="colorbrewer.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/Kojak.css">
 </head>
 
@@ -25,10 +25,22 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6" id="area1"></div>
             <div class="col-md-6" id="area2"></div>
+            <div class="col-md-6" id="arealeft">
+                <div class="row" id="areapanel"></div>
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Description of the bar chart</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>Each bar is a news category, whose length is proportional to number of news in the category.</p>
+                            <p>The color and the number on each bar is the average tone of all the news in this category. Green is a positive tone, red is negative, with color intensity proportional to the value of the average tone.</p>
+                        </div>
+                    </div>
+                <div class="row" id="area1"></div>
+            </div>
         </div>
     </div>
-    <script src="/static/barchart.js"></script>
-    <script src="/static/maps.js"></script>
+    <script src="barchart.js"></script>
+    <script src="maps.js"></script>
 </body>
