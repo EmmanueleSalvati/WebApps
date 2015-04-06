@@ -40,7 +40,7 @@ d3.csv("/static/tot_events_northamerica.csv", function(data) {
             json.objects.northamerica_subunits).features.length);
 
         color.range(colorbrewer.Accent[numColors]);
-        console.log(numColors);
+        // console.log(numColors);
 
         for (var i = 0; i < data.length; i++) {
             var country = data[i].DomainCountry;
