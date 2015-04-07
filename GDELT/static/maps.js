@@ -126,6 +126,11 @@ d3.csv("/static/tot_events_northamerica.csv", function(data) {
 
         function somethingCool() {
             var mysel = d3.select(this).data();
+                // .transition()
+                // .duration(2000)
+                // .ease("elastic")
+                // .delay(200)
+                // .data();
             $("svg.chart").empty();
             var country = {
                 'CAN': '/static/Canada.tsv',
