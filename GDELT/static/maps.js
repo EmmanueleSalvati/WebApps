@@ -40,7 +40,7 @@ d3.csv("/static/tot_events_northamerica.csv", function(data) {
             json.objects.northamerica_subunits).features.length);
 
         color.range(colorbrewer.Accent[numColors]);
-        console.log(numColors);
+        // console.log(numColors);
 
         for (var i = 0; i < data.length; i++) {
             var country = data[i].DomainCountry;
@@ -126,6 +126,11 @@ d3.csv("/static/tot_events_northamerica.csv", function(data) {
 
         function somethingCool() {
             var mysel = d3.select(this).data();
+                // .transition()
+                // .duration(2000)
+                // .ease("elastic")
+                // .delay(200)
+                // .data();
             $("svg.chart").empty();
             var country = {
                 'CAN': '/static/Canada.tsv',
