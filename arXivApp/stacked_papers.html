@@ -18,9 +18,10 @@
 </head>
 
 <body>
-    <p style="text-align: center">
-    <button onclick="transitionStack()" id="button-stack" class="first last">Electrons</button>
-    </p>
+    <!--     <p style="text-align: center"> -->
+    <button id="button-electron">Electrons</button>
+    <button id="button-muon">Muons</button>
+    <!--     </p> -->
     <div id="barchart"></div>
     <script type="text/javascript">
     var w = 800,
@@ -47,56 +48,68 @@
         .orient("left")
         .ticks(5);
 
-    var svg = d3.select("#barchart")
-        .append("svg")
-        .attr('width', w)
-        .attr('height', h);
-
     var format = d3.time.format("%Y-%m");
 
-    d3.csv("/static/muons.csv", type, function(data) {
-        var minYear = d3.min(data, function(d) {
-            return d.year;
-        });
-        var maxYear = d3.max(data, function(d) {
-            return d.year;
-        });
-        xScale.domain([format.parse(minYear + "-01"),
-            format.parse(maxYear + "-12")
-        ]);
-        yScale.domain([0, d3.max(data, function(d) {
-            return d.electrons;
-        })]);
+    var particle_name = "/static/electrons.csv";
 
-        svg.selectAll("rect")
-            .data(data)
-            .enter()
-            .append("rect")
-            .attr({
-                x: function(d) {
-                    return xScale(format.parse(d.year + "-" + d.month));
-                },
-                y: function(d) {
-                    return h - yScale(d.electrons);
-                },
-                width: (w / data.length) - barPadding,
-                height: function(d) {
-                    return yScale(d.electrons) - padding;
-                },
-                fill: "#aad"
+    var particle = d3.selectAll("button")
+        .on("click", function() {
+            var text = d3.select(this).text();
+            particle_name = "/static/".concat(text.toLowerCase(), ".csv");
+            d3.select("svg").remove();
+            draw_bar(particle_name);
+        });
+
+    var draw_bar = function(particle_name) {
+        d3.csv(particle_name, type, function(data) {
+            var minYear = d3.min(data, function(d) {
+                return d.year;
             });
+            var maxYear = d3.max(data, function(d) {
+                return d.year;
+            });
+            xScale.domain([format.parse(minYear + "-01"),
+                format.parse(maxYear + "-12")
+            ]);
+            yScale.domain([0, d3.max(data, function(d) {
+                return d.electrons;
+            })]);
 
-        svg.append("g")
-            .attr("class", "axis")
-            .attr("transform", 'translate(' + 0 + ',' + (h - padding) + ')')
-            .call(xAxis);
+            var svg = d3.select("#barchart")
+                .append("svg")
+                .attr('width', w)
+                .attr('height', h);
 
-        svg.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(" + padding + ", 0)")
-            .call(yAxis);
+            svg.selectAll("rect")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr({
+                    x: function(d) {
+                        return xScale(format.parse(d.year + "-" + d.month));
+                    },
+                    y: function(d) {
+                        return h - yScale(d.electrons);
+                    },
+                    width: (w / data.length) - barPadding,
+                    height: function(d) {
+                        return yScale(d.electrons) - padding;
+                    },
+                    fill: "#aad"
+                });
 
-    });
+            svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", 'translate(' + 0 + ',' + (h - padding) + ')')
+                .call(xAxis);
+
+            svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(" + padding + ", 0)")
+                .call(yAxis);
+
+        });
+    };
 
     function type(d) {
         d.rollingmonth = +d.rollingmonth;
