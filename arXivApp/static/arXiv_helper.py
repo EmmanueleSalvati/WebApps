@@ -166,5 +166,5 @@ def create_particle_csv(particle_name):
     muon, etc.) and it creates the csv file"""
 
     ym_dict = convert_date_to_yearmonth('../abs_dict.pkl')
-    roll_dict = convert_ym_to_sumofmonths(ym_dict)
+    roll_dict = convert_ym_to_sumofmonths(ym_dict, particle_name)
     electrons_in_abstract(roll_dict, particle_name)

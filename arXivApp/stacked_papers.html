@@ -54,7 +54,7 @@
 
     var format = d3.time.format("%Y-%m");
 
-    d3.csv("/static/electrons.csv", type, function(data) {
+    d3.csv("/static/muons.csv", type, function(data) {
         var minYear = d3.min(data, function(d) {
             return d.year;
         });
