@@ -5,6 +5,7 @@ from textblob import TextBlob
 from collections import OrderedDict
 from collections import Counter
 from datetime import datetime
+import pickle as pkl
 
 
 def str_to_datetime(datestr):
@@ -71,15 +72,20 @@ def date_range(abstracts=None, from_date=None, to_date=None):
     return counter
 
 
-def electrons_in_abstract(abstract=None):
+def electrons_in_abstract(abstract=None, particle=None):
     """Temporary: returns a csv file like this:
     date,electrons
     u'2011-01-10',4
     ...
     """
 
+    if not particle:
+        filename = 'electrons.csv'
+    else:
+        filename = str(particle) + "s.csv"
+
     import csv
-    with open('electrons.csv', 'w') as csvfile:
+    with open(filename, 'w') as csvfile:
         fieldnames = ['rollingmonth', 'year', 'month', 'electrons']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -90,23 +96,23 @@ def electrons_in_abstract(abstract=None):
                              "electrons": v})
 
 
-def sum_electrons(particle_row):
+def sum_electrons(particle_row, particle='electron'):
     """Get a list [u'muon', u'electron', u'electron', etc.]
     and return the number of electrons"""
 
     from collections import Counter
 
-    return Counter(particle_row)['electron']
+    return Counter(particle_row)[particle]
 
 
-def write_csv(filename):
-    """Write electrons.csv from the filename=abs_yearmonth.pkl"""
+# def write_csv(filename):
+#     """Write electrons.csv from the filename=abs_yearmonth.pkl"""
 
-    import pickle as pkl
-    with open(filename, 'r') as pklfile:
-        abs_dict = pkl.load(pklfile)
+#     import pickle as pkl
+#     with open(filename, 'r') as pklfile:
+#         abs_dict = pkl.load(pklfile)
 
-    electrons_in_abstract(abs_dict)
+#     electrons_in_abstract(abs_dict)
 
 
 def convert_date_to_yearmonth(filename):
@@ -130,15 +136,15 @@ def convert_date_to_yearmonth(filename):
     return ym_dict
 
 
-def convert_ym_to_sumofmonths(filename):
+def convert_ym_to_sumofmonths(ym_dict, particle='electron'):
     """Takes the ym_dict dictionary and returns a dict of the form:
     month order, datestring, electroncount"""
 
     from collections import Counter
     from collections import OrderedDict
-    import pickle as pkl
-    with open(filename, 'r') as pklfile:
-        ym_dict = pkl.load(pklfile)
+    # import pickle as pkl
+    # with open(filename, 'r') as pklfile:
+    #     ym_dict = pkl.load(pklfile)
 
     ordered_ym_dict = OrderedDict(sorted(ym_dict.iteritems()))
     months = len(ordered_ym_dict)
@@ -150,6 +156,15 @@ def convert_ym_to_sumofmonths(filename):
                     ordered_ym_dict.items()[i][0][1])
 
         rolling_dict[my_index] = sum_electrons(ordered_ym_dict.
-                                               items()[i][1])
+                                               items()[i][1], particle)
 
     return rolling_dict
+
+
+def create_particle_csv(particle_name):
+    """This function calls all the others; I give it a particle name (electron,
+    muon, etc.) and it creates the csv file"""
+
+    ym_dict = convert_date_to_yearmonth('../abs_dict.pkl')
+    roll_dict = convert_ym_to_sumofmonths(ym_dict)
+    electrons_in_abstract(roll_dict, particle_name)
