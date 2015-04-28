@@ -6,6 +6,8 @@
     <title>Project Fletcher</title>
     <script type="text/javascript" src="static/d3.js"></script>
     <style type="text/css">
+    @import url(static/button.css);
+    @import url(static/style.css);
     .axis path,
     .axis line {
         fill: none;
@@ -16,94 +18,93 @@
 </head>
 
 <body>
-
-    <p>Number of electrons</p>
+    <p style="text-align: center">
+    <button onclick="transitionStack()" id="button-stack" class="first last">Electrons</button>
+    </p>
     <div id="barchart"></div>
     <script type="text/javascript">
-        var w = 600,
-            h = 300,
-            padding = 30;
+    var w = 800,
+        h = 400,
+        padding = 30,
+        barPadding = 10;
 
-        var xScale = d3.time.scale()
-            .range([padding, w - padding]);
+    var xScale = d3.time.scale()
+        .range([padding, w - padding]);
 
-        var yScale = d3.scale.linear()
-            .range([h - padding, padding])
-            .clamp(true);
+    var yScale = d3.scale.linear()
+        .range([h - padding, padding])
+        .clamp(true);
 
-        var color = d3.interpolateRgb("#aad", "#556");
+    var color = d3.interpolateRgb("#aad", "#556");
 
-        var xAxis = d3.svg.axis()
-            .scale(xScale)
-            .orient("bottom")
-            .ticks(5);
+    var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient("bottom")
+        .ticks(5);
 
-        var yAxis = d3.svg.axis()
-            .scale(yScale)
-            .orient("left")
-            .ticks(5);
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient("left")
+        .ticks(5);
 
-        var svg = d3.select("#barchart")
-            .append("svg")
-            .attr('width', w)
-            .attr('height', h);
+    var svg = d3.select("#barchart")
+        .append("svg")
+        .attr('width', w)
+        .attr('height', h);
 
-        var format = d3.time.format("%Y-%m");
+    var format = d3.time.format("%Y-%m");
 
-        d3.csv("/static/electrons.csv", type, function(data) {
-            var minYear = d3.min(data, function(d) {
-                return d.year;
-            });
-            var maxYear = d3.max(data, function(d) {
-                return d.year;
-            });
-            xScale.domain([format.parse(minYear + "-01"),
-                        format.parse(maxYear + "-12")]);
-            yScale.domain([0, d3.max(data, function(d) {
-                return d.electrons;
-            })]);
-
-            svg.selectAll("rect")
-                .data(data)
-                .enter()
-                .append("rect")
-                .attr({
-                    x: function(d) {
-                        return xScale(format.parse(d.year + "-" + d.month));
-                    },
-                    y: function(d) {
-                        return h - yScale(d.electrons);
-                    },
-                    width: (w / data.length),
-                    height: function(d) {
-                        return yScale(d.electrons) - padding;
-                    },
-                    fill: "#aad"
-                    // fill: function(d) {
-                    //     return color(d.electrons);
-                    // }
-                });
-
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", 'translate(' + 0 + ',' + (h - padding) + ')')
-                .call(xAxis);
-
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", "translate(" + padding + ", 0)")
-                .call(yAxis);
-
+    d3.csv("/static/electrons.csv", type, function(data) {
+        var minYear = d3.min(data, function(d) {
+            return d.year;
         });
+        var maxYear = d3.max(data, function(d) {
+            return d.year;
+        });
+        xScale.domain([format.parse(minYear + "-01"),
+            format.parse(maxYear + "-12")
+        ]);
+        yScale.domain([0, d3.max(data, function(d) {
+            return d.electrons;
+        })]);
 
-        function type(d) {
-            d.rollingmonth = +d.rollingmonth;
-            d.electrons = +d.electrons;
-            d.year = +d.year;
-            d.month = +d.month;
-            return d;
-        }
+        svg.selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr({
+                x: function(d) {
+                    return xScale(format.parse(d.year + "-" + d.month));
+                },
+                y: function(d) {
+                    return h - yScale(d.electrons);
+                },
+                width: (w / data.length) - barPadding,
+                height: function(d) {
+                    return yScale(d.electrons) - padding;
+                },
+                fill: "#aad"
+            });
 
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", 'translate(' + 0 + ',' + (h - padding) + ')')
+            .call(xAxis);
+
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(" + padding + ", 0)")
+            .call(yAxis);
+
+    });
+
+    function type(d) {
+        d.rollingmonth = +d.rollingmonth;
+        d.electrons = +d.electrons;
+        d.year = +d.year;
+        d.month = +d.month;
+        return d;
+    }
     </script>
 </body>
 
