@@ -50,10 +50,8 @@ app = flask.Flask(__name__)
 def viz_page():
     """Homepage to serve the visualization page"""
 
-    with open('arXiv_Pyramid.html') as viz_file:
+    with open('stacked_papers.html') as viz_file:
         return viz_file.read()
-    # with open('Pyramid.html') as viz_file:
-    #     return viz_file.read()
 
 
 @app.route("/postdir", methods=['POST'])
