@@ -8,20 +8,12 @@
     <style type="text/css">
     @import url(static/button.css);
     @import url(static/style.css);
-    .axis path,
-    .axis line {
-        fill: none;
-        stroke: black;
-        shape-rendering: crispEdges;
-    }
     </style>
 </head>
 
 <body>
-    <!--     <p style="text-align: center"> -->
     <button id="button-electron">Electrons</button>
     <button id="button-muon">Muons</button>
-    <!--     </p> -->
     <div id="barchart"></div>
     <script type="text/javascript">
     var w = 800,
@@ -98,6 +90,22 @@
                     fill: "#aad"
                 });
 
+            // Axes labels
+            svg.append("text")
+                .attr('transform', 'translate(' + (w / 2) + ',' + (h - padding/3) + ')')
+                .style('text-anchor', 'middle')
+                .style("text-size", "12px")
+                .text('year');
+
+            svg.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr('y', -6)
+                .attr('x', -h / 2)
+                .attr('dy', '1em')
+                .attr('text-anchor', 'middle')
+                .attr('text-size', '12px')
+                .text('particles per month');
+
             svg.append("g")
                 .attr("class", "axis")
                 .attr("transform", 'translate(' + 0 + ',' + (h - padding) + ')')
@@ -117,7 +125,10 @@
         d.year = +d.year;
         d.month = +d.month;
         return d;
-    }
+    };
+
+    // This is to draw the bar chart when you first load the page.
+    draw_bar("/static/electrons.csv");
     </script>
 </body>
 
